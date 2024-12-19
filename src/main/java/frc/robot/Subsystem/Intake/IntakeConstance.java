@@ -6,6 +6,7 @@ import frc.robot.Subsystem.Intake.IOs.IntakeIO;
 import frc.robot.Subsystem.Intake.IOs.IntakeIOReal;
 import frc.robot.Subsystem.Intake.IOs.IntakeIOSim;
 
+
 public class IntakeConstance {
     public static final double INTAKE_GEAR = 1;
     public static final double PeakCurrentLimit = 30; 
