@@ -21,8 +21,8 @@ public interface IntakeIO {
 
     double getAplidVoltPositionMotor();
 
-    double getPositionPositionMotor();
-    
+    double getIntakePosition();
+
     void uptate();
 
 }

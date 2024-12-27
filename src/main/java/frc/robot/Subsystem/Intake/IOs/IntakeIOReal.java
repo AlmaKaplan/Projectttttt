@@ -69,17 +69,17 @@ public class IntakeIOreal implements IntakeIO{
         motorConfigPosition.Voltage.PeakForwardVoltage = 12;
         motorConfigPosition.Voltage.PeakReverseVoltage = -12;
 
-        motorConfigPosition.CurrentLimits.SupplyCurrentLimitEnable = IntakeConstance.IsCurrentLimitEnabled;
-        motorConfigPosition.CurrentLimits.SupplyCurrentLimit = IntakeConstance.PeakCurrentLimit;
-        motorConfigPosition.CurrentLimits.SupplyCurrentLowerLimit = IntakeConstance.ContinuesCurrentLimit;
-        motorConfigPosition.CurrentLimits.SupplyCurrentLowerTime = IntakeConstance.PeakCurrentTime;
+        motorConfigPosition.CurrentLimits.SupplyCurrentLimitEnable = IntakeConstance.POSITION_IsCurrentLimitEnabled;
+        motorConfigPosition.CurrentLimits.SupplyCurrentLimit = IntakeConstance.POSITION_PeakCurrentLimit;
+        motorConfigPosition.CurrentLimits.SupplyCurrentLowerLimit = IntakeConstance.POSITION_ContinuesCurrentLimit;
+        motorConfigPosition.CurrentLimits.SupplyCurrentLowerTime = IntakeConstance.POSITION_PeakCurrentTime;
 
         motorConfigPosition.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         motorConfigPosition.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-        motorConfigPosition.Slot0.kP = IntakeConstance.KP;
-        motorConfigPosition.Slot0.kI = IntakeConstance.KI;
-        motorConfigPosition.Slot0.kD = IntakeConstance.KD;
+        motorConfigPosition.Slot0.kP = IntakeConstance.KP_POSITION;
+        motorConfigPosition.Slot0.kI = IntakeConstance.KI_POSITION;
+        motorConfigPosition.Slot0.kD = IntakeConstance.KD_POSITION;
 
         positionMotor.getConfigurator().apply(motorConfigPosition);
     }
@@ -91,10 +91,10 @@ public class IntakeIOreal implements IntakeIO{
         motorConfigIntakeMotor.Voltage.PeakForwardVoltage = 12;
         motorConfigIntakeMotor.Voltage.PeakReverseVoltage = -12;
 
-        motorConfigIntakeMotor.CurrentLimits.SupplyCurrentLimitEnable = IntakeConstance.IsCurrentLimitEnabled;
-        motorConfigIntakeMotor.CurrentLimits.SupplyCurrentLimit = IntakeConstance.PeakCurrentLimit;
-        motorConfigIntakeMotor.CurrentLimits.SupplyCurrentLowerLimit = IntakeConstance.ContinuesCurrentLimit;
-        motorConfigIntakeMotor.CurrentLimits.SupplyCurrentLowerTime = IntakeConstance.PeakCurrentTime;
+        motorConfigIntakeMotor.CurrentLimits.SupplyCurrentLimitEnable = IntakeConstance.INTAKE_IsCurrentLimitEnabled;
+        motorConfigIntakeMotor.CurrentLimits.SupplyCurrentLimit = IntakeConstance.INTAKE_PeakCurrentLimit;
+        motorConfigIntakeMotor.CurrentLimits.SupplyCurrentLowerLimit = IntakeConstance.INTAKE_ContinuesCurrentLimit;
+        motorConfigIntakeMotor.CurrentLimits.SupplyCurrentLowerTime = IntakeConstance.INTAKE_PeakCurrentTime;
 
         motorConfigIntakeMotor.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         motorConfigIntakeMotor.MotorOutput.NeutralMode = NeutralModeValue.Coast;
@@ -168,7 +168,7 @@ public class IntakeIOreal implements IntakeIO{
         return appliedVoltagePositionMotor.getValueAsDouble();
     }
 
-    public double getPositionPositionMotor() {
+    public double getIntakePosition() {
         return positionPositionMotor.getValueAsDouble();
     }
 
