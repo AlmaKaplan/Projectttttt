@@ -1,6 +1,7 @@
 
 package frc.robot.Subsystem.Intake.IOs;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -18,8 +19,8 @@ import frc.robot.Subsystem.Intake.IntakeConstance;
 
 public class IntakeIOreal implements IntakeIO{
 
-    protected TalonFX IntakeMotor;
-    protected TalonFX PositionMotor;
+    protected TalonFX intakeMotor;
+    protected TalonFX positionMotor;
     protected TalonFXConfiguration motorConfigIntakeMotor;
     protected TalonFXConfiguration motorConfigPosition;
     
@@ -39,22 +40,24 @@ public class IntakeIOreal implements IntakeIO{
     private StatusSignal<Angle> positionPositionMotor;
 
     public IntakeIOreal() {
-        IntakeMotor = new TalonFX(PortMap.IntakePorts.INTAKE_MOTOR_ID);
-        PositionMotor = new TalonFX(PortMap.IntakePorts.POSTION_MOTOR_ID);
+        intakeMotor = new TalonFX(PortMap.IntakePorts.INTAKE_MOTOR_ID);
+        positionMotor = new TalonFX(PortMap.IntakePorts.POSTION_MOTOR_ID);
         motorConfigIntakeMotor = new TalonFXConfiguration();
         motorConfigPosition = new TalonFXConfiguration();
 
-        currentDrawIntakeMotor = IntakeMotor.getSupplyCurrent();
-        velocityIntakeMotor =  IntakeMotor.getVelocity();
-        intakeMotorTemp = IntakeMotor.getDeviceTemp();
-        appliedVoltageIntakeMotor = IntakeMotor.getMotorVoltage();
-        positionIntakeMotor = IntakeMotor.getPosition();
+        PositionControl = new PositionVoltage(0);
 
-        currentDrawPositionMotor = PositionMotor.getSupplyCurrent();
-        velocityPositionMotor =  PositionMotor.getVelocity();
-        positionMotorTemp = PositionMotor.getDeviceTemp();
-        appliedVoltagePositionMotor = PositionMotor.getMotorVoltage();
-        positionPositionMotor = PositionMotor.getPosition();
+        currentDrawIntakeMotor = intakeMotor.getSupplyCurrent();
+        velocityIntakeMotor =  intakeMotor.getVelocity();
+        intakeMotorTemp = intakeMotor.getDeviceTemp();
+        appliedVoltageIntakeMotor = intakeMotor.getMotorVoltage();
+        positionIntakeMotor = intakeMotor.getPosition();
+
+        currentDrawPositionMotor = positionMotor.getSupplyCurrent();
+        velocityPositionMotor =  positionMotor.getVelocity();
+        positionMotorTemp = positionMotor.getDeviceTemp();
+        appliedVoltagePositionMotor = positionMotor.getMotorVoltage();
+        positionPositionMotor = positionMotor.getPosition();
 
         configIntakeMotor();
         configPosition();
@@ -78,7 +81,7 @@ public class IntakeIOreal implements IntakeIO{
         motorConfigPosition.Slot0.kI = IntakeConstance.KI;
         motorConfigPosition.Slot0.kD = IntakeConstance.KD;
 
-        PositionMotor.getConfigurator().apply(motorConfigPosition);
+        positionMotor.getConfigurator().apply(motorConfigPosition);
     }
 
 
@@ -96,15 +99,15 @@ public class IntakeIOreal implements IntakeIO{
         motorConfigIntakeMotor.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         motorConfigIntakeMotor.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-        IntakeMotor.getConfigurator().apply(motorConfigIntakeMotor);
+        intakeMotor.getConfigurator().apply(motorConfigIntakeMotor);
     }
 
     public void setVoltageIntakeMotor(double volt) {
-        IntakeMotor.setVoltage(volt);
+        intakeMotor.setVoltage(volt);
     }
 
     public void setVoltagePositionMotor(double volt) {
-        IntakeMotor.setVoltage(volt);
+        positionMotor.setVoltage(volt);
     }
 
     public void setNutralModeIntakeMotor(boolean isbrake) {
@@ -113,6 +116,7 @@ public class IntakeIOreal implements IntakeIO{
         } else {
             motorConfigIntakeMotor.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         }
+        intakeMotor.getConfigurator().apply(motorConfigIntakeMotor);
     }
 
     public void setNutralModePositionMotor(boolean isbrake) {
@@ -121,72 +125,66 @@ public class IntakeIOreal implements IntakeIO{
         } else {
             motorConfigPosition.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         }
+        positionMotor.getConfigurator().apply(motorConfigPosition);
     }
 
     public void setIntakePostion(double position) {
-        PositionMotor.setControl(PositionControl.withPosition(position).withSlot(IntakeConstance.CONTROL_SLOT));
+        positionMotor.setControl(PositionControl.withPosition(position).withSlot(IntakeConstance.CONTROL_SLOT));
     }
 
     public double getCurrentDrawIntakeMotor() {
-        currentDrawIntakeMotor.refresh();
         return currentDrawIntakeMotor.getValueAsDouble();
     }
 
     public double getVelocityIntakeMotor() {
-        velocityIntakeMotor.refresh();
         return velocityIntakeMotor.getValueAsDouble();
     }
 
     public double getIntakeMotorTemp() {
-        intakeMotorTemp.refresh();
         return intakeMotorTemp.getValueAsDouble();
     }
 
     public double getAplidVoltIntakeMotor() {
-        appliedVoltageIntakeMotor.refresh();
         return appliedVoltageIntakeMotor.getValueAsDouble();
     }
 
     public double getPositionIntakeMotor() {
-        positionIntakeMotor.refresh();
         return positionIntakeMotor.getValueAsDouble();
     }
 
     public double getCurrentDrawPositionMotor() {
-        currentDrawPositionMotor.refresh();
         return currentDrawPositionMotor.getValueAsDouble();
     }
 
     public double getVelocityPositionMotor() {
-        velocityPositionMotor.refresh();
         return velocityPositionMotor.getValueAsDouble();
     }
 
     public double getPositionMotorTemp() {
-        positionMotorTemp.refresh();
         return positionMotorTemp.getValueAsDouble();
     }
 
     public double getAplidVoltPositionMotor() {
-        appliedVoltagePositionMotor.refresh();
         return appliedVoltagePositionMotor.getValueAsDouble();
     }
 
     public double getPositionPositionMotor() {
-        positionPositionMotor.refresh();
         return positionPositionMotor.getValueAsDouble();
     }
 
     public void uptate() {
-        getCurrentDrawIntakeMotor();
-        getVelocityIntakeMotor();
-        getIntakeMotorTemp();
-        getAplidVoltIntakeMotor();
-        getPositionIntakeMotor();
-        getCurrentDrawPositionMotor();
-        getVelocityPositionMotor();
-        getPositionMotorTemp();
-        getAplidVoltPositionMotor();
-        getPositionPositionMotor();
+        BaseStatusSignal.refreshAll(
+            currentDrawIntakeMotor,
+            velocityIntakeMotor,
+            intakeMotorTemp,
+            appliedVoltageIntakeMotor,
+            positionIntakeMotor,
+            currentDrawPositionMotor,
+            velocityPositionMotor,
+            positionMotorTemp,
+            appliedVoltagePositionMotor,
+            positionPositionMotor
+
+        );
     }
 }

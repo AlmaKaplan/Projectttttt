@@ -7,19 +7,19 @@ import edu.wpi.first.math.system.plant.DCMotor;
 
 public class IntakeIOSim extends IntakeIOreal{
 
-    private TalonFXMotorSim IntakeMotorSim;
-    private TalonFXMotorSim PositionMotorSim;
+    private TalonFXMotorSim intakeMotorSim;
+    private TalonFXMotorSim positionMotorSim;
 
     public IntakeIOSim() {
         super();
-        IntakeMotorSim = new TalonFXMotorSim(IntakeMotor, motorConfigIntakeMotor, DCMotor.getFalcon500(1), 0.025);
-        PositionMotorSim = new TalonFXMotorSim(PositionMotor ,motorConfigPosition, DCMotor.getKrakenX60(1), 0.2);
+        intakeMotorSim = new TalonFXMotorSim(intakeMotor, motorConfigIntakeMotor, DCMotor.getFalcon500(1), 0.025);
+        positionMotorSim = new TalonFXMotorSim(positionMotor ,motorConfigPosition, DCMotor.getKrakenX60(1), 0.2);
     }
 
     @Override
     public void uptate() {
         super.uptate();
-        IntakeMotorSim.updateSim();
-        PositionMotorSim.updateSim();
+        intakeMotorSim.updateSim();
+        positionMotorSim.updateSim();
     }
 }
