@@ -3,6 +3,7 @@ package frc.robot.Subsystem.Intake.IOs;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -17,9 +18,13 @@ import frc.robot.Subsystem.Intake.IntakeConstance;
 
 public class IntakeIOreal implements IntakeIO{
 
-    private TalonFX IntakeMotor;
-    private TalonFX positionMotor;
-    private TalonFXConfiguration motorConfig;
+    protected TalonFX IntakeMotor;
+    protected TalonFX PositionMotor;
+    protected TalonFXConfiguration motorConfigIntakeMotor;
+    protected TalonFXConfiguration motorConfigPosition;
+    
+
+    private PositionVoltage PositionControl;
 
     private StatusSignal<Current> currentDrawIntakeMotor;
     private StatusSignal<AngularVelocity> velocityIntakeMotor;
@@ -35,8 +40,9 @@ public class IntakeIOreal implements IntakeIO{
 
     public IntakeIOreal() {
         IntakeMotor = new TalonFX(PortMap.IntakePorts.INTAKE_MOTOR_ID);
-        positionMotor = new TalonFX(PortMap.IntakePorts.POSTION_MOTOR_ID);
-        motorConfig = new TalonFXConfiguration();
+        PositionMotor = new TalonFX(PortMap.IntakePorts.POSTION_MOTOR_ID);
+        motorConfigIntakeMotor = new TalonFXConfiguration();
+        motorConfigPosition = new TalonFXConfiguration();
 
         currentDrawIntakeMotor = IntakeMotor.getSupplyCurrent();
         velocityIntakeMotor =  IntakeMotor.getVelocity();
@@ -44,53 +50,53 @@ public class IntakeIOreal implements IntakeIO{
         appliedVoltageIntakeMotor = IntakeMotor.getMotorVoltage();
         positionIntakeMotor = IntakeMotor.getPosition();
 
-        currentDrawPositionMotor = positionMotor.getSupplyCurrent();
-        velocityPositionMotor =  positionMotor.getVelocity();
-        positionMotorTemp = positionMotor.getDeviceTemp();
-        appliedVoltagePositionMotor = positionMotor.getMotorVoltage();
-        positionPositionMotor = positionMotor.getPosition();
+        currentDrawPositionMotor = PositionMotor.getSupplyCurrent();
+        velocityPositionMotor =  PositionMotor.getVelocity();
+        positionMotorTemp = PositionMotor.getDeviceTemp();
+        appliedVoltagePositionMotor = PositionMotor.getMotorVoltage();
+        positionPositionMotor = PositionMotor.getPosition();
 
         configIntakeMotor();
         configPosition();
     }
 
     private void configPosition() {
-        motorConfig.Feedback.SensorToMechanismRatio = IntakeConstance.INTAKE_GEAR;
+        motorConfigPosition.Feedback.SensorToMechanismRatio = IntakeConstance.INTAKE_GEAR;
 
-        motorConfig.Voltage.PeakForwardVoltage = 12;
-        motorConfig.Voltage.PeakReverseVoltage = -12;
+        motorConfigPosition.Voltage.PeakForwardVoltage = 12;
+        motorConfigPosition.Voltage.PeakReverseVoltage = -12;
 
-        motorConfig.CurrentLimits.SupplyCurrentLimitEnable = IntakeConstance.IsCurrentLimitEnabled;
-        motorConfig.CurrentLimits.SupplyCurrentLimit = IntakeConstance.PeakCurrentLimit;
-        motorConfig.CurrentLimits.SupplyCurrentLowerLimit = IntakeConstance.ContinuesCurrentLimit;
-        motorConfig.CurrentLimits.SupplyCurrentLowerTime = IntakeConstance.PeakCurrentTime;
+        motorConfigPosition.CurrentLimits.SupplyCurrentLimitEnable = IntakeConstance.IsCurrentLimitEnabled;
+        motorConfigPosition.CurrentLimits.SupplyCurrentLimit = IntakeConstance.PeakCurrentLimit;
+        motorConfigPosition.CurrentLimits.SupplyCurrentLowerLimit = IntakeConstance.ContinuesCurrentLimit;
+        motorConfigPosition.CurrentLimits.SupplyCurrentLowerTime = IntakeConstance.PeakCurrentTime;
 
-        motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-        motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        motorConfigPosition.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        motorConfigPosition.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-        motorConfig.Slot0.kP = IntakeConstance.KP;
-        motorConfig.Slot0.kI = IntakeConstance.KI;
-        motorConfig.Slot0.kD = IntakeConstance.KD;
+        motorConfigPosition.Slot0.kP = IntakeConstance.KP;
+        motorConfigPosition.Slot0.kI = IntakeConstance.KI;
+        motorConfigPosition.Slot0.kD = IntakeConstance.KD;
 
-        positionMotor.getConfigurator().apply(motorConfig);
+        PositionMotor.getConfigurator().apply(motorConfigPosition);
     }
 
 
     private void configIntakeMotor() {
-        motorConfig.Feedback.SensorToMechanismRatio = IntakeConstance.INTAKE_GEAR;
+        motorConfigIntakeMotor.Feedback.SensorToMechanismRatio = IntakeConstance.INTAKE_GEAR;
 
-        motorConfig.Voltage.PeakForwardVoltage = 12;
-        motorConfig.Voltage.PeakReverseVoltage = -12;
+        motorConfigIntakeMotor.Voltage.PeakForwardVoltage = 12;
+        motorConfigIntakeMotor.Voltage.PeakReverseVoltage = -12;
 
-        motorConfig.CurrentLimits.SupplyCurrentLimitEnable = IntakeConstance.IsCurrentLimitEnabled;
-        motorConfig.CurrentLimits.SupplyCurrentLimit = IntakeConstance.PeakCurrentLimit;
-        motorConfig.CurrentLimits.SupplyCurrentLowerLimit = IntakeConstance.ContinuesCurrentLimit;
-        motorConfig.CurrentLimits.SupplyCurrentLowerTime = IntakeConstance.PeakCurrentTime;
+        motorConfigIntakeMotor.CurrentLimits.SupplyCurrentLimitEnable = IntakeConstance.IsCurrentLimitEnabled;
+        motorConfigIntakeMotor.CurrentLimits.SupplyCurrentLimit = IntakeConstance.PeakCurrentLimit;
+        motorConfigIntakeMotor.CurrentLimits.SupplyCurrentLowerLimit = IntakeConstance.ContinuesCurrentLimit;
+        motorConfigIntakeMotor.CurrentLimits.SupplyCurrentLowerTime = IntakeConstance.PeakCurrentTime;
 
-        motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-        motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        motorConfigIntakeMotor.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        motorConfigIntakeMotor.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-        IntakeMotor.getConfigurator().apply(motorConfig);
+        IntakeMotor.getConfigurator().apply(motorConfigIntakeMotor);
     }
 
     public void setVoltageIntakeMotor(double volt) {
@@ -103,22 +109,22 @@ public class IntakeIOreal implements IntakeIO{
 
     public void setNutralModeIntakeMotor(boolean isbrake) {
         if (isbrake) {
-            motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+            motorConfigIntakeMotor.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         } else {
-            motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+            motorConfigIntakeMotor.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         }
     }
 
     public void setNutralModePositionMotor(boolean isbrake) {
         if (isbrake) {
-            motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+            motorConfigPosition.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         } else {
-            motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+            motorConfigPosition.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         }
     }
 
     public void setIntakePostion(double position) {
-          
+        PositionMotor.setControl(PositionControl.withPosition(position).withSlot(IntakeConstance.CONTROL_SLOT));
     }
 
     public double getCurrentDrawIntakeMotor() {

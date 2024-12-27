@@ -12,6 +12,6 @@ public class IntakeConstance {
     public static final double KI = 0;
     public static final double KD = 0;
 
-    public static final double CONTROL_SLOT = 0;
+    public static final int CONTROL_SLOT = 0;
     
 }
