@@ -23,6 +23,16 @@ public interface IntakeIO {
 
     double getIntakePosition();
 
+    double getVelocityIntakeMotor();
+
+    double getIntakeMotorTemp();
+
+    double getPositionIntakeMotor();
+
+    double getVelocityPositionMotor();
+
+    double getPositionMotorTemp();
+
     void uptate();
 
 }

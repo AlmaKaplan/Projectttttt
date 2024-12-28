@@ -31,6 +31,46 @@ public class Intake extends StateControlledSubsystem {
     intakeIO.setIntakePostion(IntakeConstance.TO_FEEDER_POSE);
   }
 
+  public double getCurrentDrewIntakeMotor() {
+    return intakeIO.getCurrentDrawIntakeMotor();
+  }
+
+  public double getCurrentDrewPositionMotor() {
+    return intakeIO.getCurrentDrawPositionMotor();
+  }
+
+  public double getVelocityIntakeMotor() {
+    return intakeIO.getVelocityIntakeMotor();
+  }
+
+  public double getVelocityPositionMotor() {
+    return intakeIO.getVelocityIntakeMotor();
+  }
+
+  public double getIntakeMotorTemp() {
+    return intakeIO.getIntakeMotorTemp();
+  }
+
+  public double getApliedVoltsPositionMotor() {
+    return intakeIO.getAplidVoltPositionMotor();
+  }
+
+  public double getAplidVoltIntakeMotor() {
+    return intakeIO.getAplidVoltIntakeMotor();
+  }
+
+  public double getPositionIntakeMotor() {
+    return intakeIO.getPositionIntakeMotor();
+  }
+
+  public double getIntakePosition() {
+    return getIntakePosition();
+  }
+
+  public double getPositionMotorTemp() {
+    return getPositionMotorTemp();
+  }
+
   public static Intake getInstance() {
     if (intake == null) {
       intake = new Intake();

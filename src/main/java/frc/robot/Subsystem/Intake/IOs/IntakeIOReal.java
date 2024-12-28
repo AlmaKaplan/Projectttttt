@@ -1,6 +1,7 @@
 
 package frc.robot.Subsystem.Intake.IOs;
 
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -8,6 +9,8 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ma5951.utils.Logger.LoggedDouble;
+import com.ma5951.utils.Utils.ConvUtil;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -17,7 +20,7 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.robot.PortMap;
 import frc.robot.Subsystem.Intake.IntakeConstance;
 
-public class IntakeIOreal implements IntakeIO{
+public class IntakeIOreal implements IntakeIO {
 
     protected TalonFX intakeMotor;
     protected TalonFX positionMotor;
@@ -26,6 +29,7 @@ public class IntakeIOreal implements IntakeIO{
     
 
     private PositionVoltage PositionControl;
+
 
     private StatusSignal<Current> currentDrawIntakeMotor;
     private StatusSignal<AngularVelocity> velocityIntakeMotor;
@@ -37,7 +41,22 @@ public class IntakeIOreal implements IntakeIO{
     private StatusSignal<AngularVelocity> velocityPositionMotor;
     private StatusSignal<Temperature> positionMotorTemp;
     private StatusSignal<Voltage> appliedVoltagePositionMotor;
-    private StatusSignal<Angle> positionPositionMotor;
+    private StatusSignal<Angle> intakePosition;
+
+
+
+    private LoggedDouble currentDrawIntakeMotorLog;
+    private LoggedDouble velocityIntakeMotorLog;
+    private LoggedDouble intakeMotorTempLog;
+    private LoggedDouble appliedVoltageIntakeMotorLog;
+    private LoggedDouble positionIntakeMotorLog;
+
+    private LoggedDouble currentDrawPositionMotorLog;
+    private LoggedDouble velocityPotitionMotorLog;
+    private LoggedDouble positionMotorTempLog;
+    private LoggedDouble appliedVoltagePositionMotorLog;
+    private LoggedDouble intakePositionLog;
+
 
     public IntakeIOreal() {
         intakeMotor = new TalonFX(PortMap.IntakePorts.INTAKE_MOTOR_ID);
@@ -57,7 +76,19 @@ public class IntakeIOreal implements IntakeIO{
         velocityPositionMotor =  positionMotor.getVelocity();
         positionMotorTemp = positionMotor.getDeviceTemp();
         appliedVoltagePositionMotor = positionMotor.getMotorVoltage();
-        positionPositionMotor = positionMotor.getPosition();
+        intakePosition = positionMotor.getPosition();
+
+        currentDrawIntakeMotorLog = new LoggedDouble("/Subsystem/Intake/IO/Current Draw Intake Motor");
+        velocityIntakeMotorLog = new LoggedDouble("/Subsystem/Intake/IO/Velocity Intake Motor");
+        intakeMotorTempLog = new LoggedDouble("/Subsystem/Intake/IO/Intake Motor Temp");
+        appliedVoltageIntakeMotorLog = new LoggedDouble("/Subsystem/Intake/IO/Applied Voltage Intake Motor");
+        positionIntakeMotorLog = new LoggedDouble("/Subsystem/Intake/IO/Position Intake Motor");
+
+        currentDrawPositionMotorLog = new LoggedDouble("/Subsystem/Intake/IO/Current Draw Position Motor");
+        velocityPotitionMotorLog = new LoggedDouble("/Subsystem/Intake/IO/Velocity Intake Motor");
+        positionMotorTempLog = new LoggedDouble("/Subsystem/Intake/IO/Position Motor Temp");
+        appliedVoltagePositionMotorLog = new LoggedDouble("/Subsystem/Intake/IO/Applied Voltage Position Motor");
+        intakePositionLog = new LoggedDouble("/Subsystem/Intake/IO/Intake Position");
 
         configIntakeMotor();
         configPosition();
@@ -137,7 +168,7 @@ public class IntakeIOreal implements IntakeIO{
     }
 
     public double getVelocityIntakeMotor() {
-        return velocityIntakeMotor.getValueAsDouble();
+        return ConvUtil.RPStoRPM(velocityIntakeMotor.getValueAsDouble());
     }
 
     public double getIntakeMotorTemp() {
@@ -149,7 +180,7 @@ public class IntakeIOreal implements IntakeIO{
     }
 
     public double getPositionIntakeMotor() {
-        return positionIntakeMotor.getValueAsDouble();
+        return ConvUtil.RotationsToDegrees(positionIntakeMotor.getValueAsDouble());
     }
 
     public double getCurrentDrawPositionMotor() {
@@ -157,7 +188,7 @@ public class IntakeIOreal implements IntakeIO{
     }
 
     public double getVelocityPositionMotor() {
-        return velocityPositionMotor.getValueAsDouble();
+        return ConvUtil.RPStoRPM(velocityPositionMotor.getValueAsDouble());
     }
 
     public double getPositionMotorTemp() {
@@ -169,7 +200,7 @@ public class IntakeIOreal implements IntakeIO{
     }
 
     public double getIntakePosition() {
-        return positionPositionMotor.getValueAsDouble();
+        return ConvUtil.RotationsToDegrees(intakePosition.getValueAsDouble());
     }
 
     public void uptate() {
@@ -183,8 +214,20 @@ public class IntakeIOreal implements IntakeIO{
             velocityPositionMotor,
             positionMotorTemp,
             appliedVoltagePositionMotor,
-            positionPositionMotor
+            intakePosition
 
         );
+
+        currentDrawIntakeMotorLog.update(getCurrentDrawIntakeMotor());
+        velocityIntakeMotorLog.update(getVelocityIntakeMotor());
+        intakeMotorTempLog.update(getIntakeMotorTemp());
+        appliedVoltageIntakeMotorLog.update(getAplidVoltIntakeMotor());
+        positionIntakeMotorLog.update(getPositionIntakeMotor());
+
+        currentDrawPositionMotorLog.update(getCurrentDrawPositionMotor());
+        velocityPotitionMotorLog.update(getAplidVoltPositionMotor());
+        positionMotorTempLog.update(getPositionMotorTemp());
+        appliedVoltagePositionMotorLog.update(getAplidVoltPositionMotor());
+        intakePositionLog.update(getIntakePosition());
     }
 }
