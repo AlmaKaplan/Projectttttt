@@ -215,7 +215,6 @@ public class IntakeIOreal implements IntakeIO {
             positionMotorTemp,
             appliedVoltagePositionMotor,
             intakePosition
-
         );
 
         currentDrawIntakeMotorLog.update(getCurrentDrawIntakeMotor());
