@@ -8,6 +8,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ma5951.utils.Logger.LoggedDouble;
 import com.ma5951.utils.Utils.ConvUtil;
 
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -24,7 +25,8 @@ public class ShooterIOReal implements ShooterIO {
     protected TalonFX leftMotor;
     protected TalonFXConfiguration leftMotorConfig;
 
-    private VelocityVoltage control;
+    private VelocityVoltage controlLeft;
+    private VelocityVoltage controlRight;
 
     private StatusSignal<Current> currentDrawRightMotor;
     private StatusSignal<AngularVelocity> velocityRightMotor;
@@ -37,6 +39,20 @@ public class ShooterIOReal implements ShooterIO {
     private StatusSignal<Voltage> appliedVoltageLeftMotor;
 
 
+    
+    private LoggedDouble currentDrawRightMotorLog;
+    private LoggedDouble velocityRightMotorLog;
+    private LoggedDouble rightMotorTempLog;
+    private LoggedDouble appliedVoltageRightMotorLog;
+
+
+    private LoggedDouble currentDrawLeftMotorLog;
+    private LoggedDouble velocityLeftMotorLog;
+    private LoggedDouble leftMotorTempLog;
+    private LoggedDouble appliedVoltageLeftMotorLog;
+
+
+
     public ShooterIOReal() {
         rightMotor = new TalonFX(PortMap.ShooterPorts.SHOOTER_RIGHT_MOTOR);
         rightMotorConfig = new TalonFXConfiguration();
@@ -44,7 +60,8 @@ public class ShooterIOReal implements ShooterIO {
         leftMotor = new TalonFX(PortMap.ShooterPorts.SHOOTER_LEFT_MOTOR);
         leftMotorConfig = new TalonFXConfiguration();
 
-        control = new VelocityVoltage(ConvUtil.RPStoRPM(ShooterConstants.SPEED));
+        controlLeft = new VelocityVoltage(ConvUtil.RPStoRPM(ShooterConstants.LEFT_SPEED));
+        controlRight = new VelocityVoltage(ConvUtil.RPStoRPM(ShooterConstants.RIGHT_SPEED));
 
         currentDrawRightMotor = rightMotor.getSupplyCurrent();
         velocityRightMotor = rightMotor.getVelocity();
@@ -55,6 +72,16 @@ public class ShooterIOReal implements ShooterIO {
         velocityLeftMotor = leftMotor.getVelocity();
         leftMotorTemp = leftMotor.getDeviceTemp();
         appliedVoltageLeftMotor = leftMotor.getMotorVoltage();
+
+        currentDrawRightMotorLog = new LoggedDouble("/Subsystem/Shooter/IO/current Draw Right Motor");
+        velocityRightMotorLog = new LoggedDouble("/Subsystem/Shooter/IO/velocity Right Motor");
+        rightMotorTempLog = new LoggedDouble("/Subsystem/Shooter/IO/right Motor Temp");
+        appliedVoltageRightMotorLog = new LoggedDouble("/Subsystem/Shooter/IO/applied Voltage Right Motor");
+
+        currentDrawLeftMotorLog = new LoggedDouble("/Subsystem/Shooter/IO/current Draw Left Motor");
+        velocityLeftMotorLog = new LoggedDouble("/Subsystem/Shooter/IO/velocity Left Motor");
+        leftMotorTempLog = new LoggedDouble("/Subsystem/Shooter/IO/left Motor Temp");
+        appliedVoltageLeftMotorLog = new LoggedDouble("/Subsystem/Shooter/IO/applied Voltage Left Motor");
 
         rightConfig();
         leftConfig();
@@ -113,11 +140,11 @@ public class ShooterIOReal implements ShooterIO {
     }
 
     public void setSpeedRight(double speed) {
-        rightMotor.setControl(control.withVelocity(speed).withSlot(ShooterConstants.CONTROL_SLOT));
+        rightMotor.setControl(controlRight.withVelocity(speed).withSlot(ShooterConstants.CONTROL_SLOT));
     }
 
     public void setSpeedLeft(double speed) {
-        leftMotor.setControl(control.withVelocity(speed).withSlot(ShooterConstants.CONTROL_SLOT));
+        leftMotor.setControl(controlLeft.withVelocity(speed).withSlot(ShooterConstants.CONTROL_SLOT));
     }
 
     public void setNutralModeRightMotor(boolean isbrake) {
@@ -181,5 +208,15 @@ public class ShooterIOReal implements ShooterIO {
             appliedVoltageRightMotor,
             appliedVoltageLeftMotor
         );
+
+        currentDrawRightMotorLog.update(getRightMotorCurrentDraw());
+        velocityRightMotorLog.update(getRightMotorVelocity());
+        rightMotorTempLog.update(getRightMotorTemp());
+        appliedVoltageRightMotorLog.update(getRightMotorApliedVolts());
+
+        currentDrawLeftMotorLog.update(getLeftMotorCurrentDraw());
+        velocityLeftMotorLog.update(getLeftMotorVelocity());
+        leftMotorTempLog.update(getLeftMotorTemp());
+        appliedVoltageLeftMotorLog.update(getLeftMotorApliedVolts());
     }
 }

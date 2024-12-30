@@ -1,6 +1,11 @@
 
 package frc.robot.Subsystem.Shooter;
 
+import frc.robot.Robot;
+import frc.robot.Subsystem.Shooter.IOs.ShooterIO;
+import frc.robot.Subsystem.Shooter.IOs.ShooterIOReal;
+import frc.robot.Subsystem.Shooter.IOs.ShooterIOSim;
+
 public class ShooterConstants {
 
     public static final double SHOOTER_GEAR_LEFT = 3;
@@ -27,5 +32,16 @@ public class ShooterConstants {
 
     public static final int CONTROL_SLOT = 0;
 
-    public static final double SPEED = 6000;
+    public static final double RIGHT_SPEED = 8000;
+    public static final double LEFT_SPEED = 6000;
+    public static final double VOLTAGE_LEFT = 6;
+    public static final double VOLTAGE_RIGHT = 8;
+    
+
+    public static final ShooterIO get_Shooter_IO() {
+        if (Robot.isReal()) {
+            return new ShooterIOReal();
+        }
+        return new ShooterIOSim();
+    }
 }
