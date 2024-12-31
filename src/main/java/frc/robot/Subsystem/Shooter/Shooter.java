@@ -69,6 +69,13 @@ public class Shooter extends StateControlledSubsystem {
     return IO.getLeftMotorVelocity();
   }
 
+  public static Shooter getInstace() {
+    if (shooter == null) {
+      shooter = new Shooter();
+    }
+    return shooter;
+  }
+
   @Override
   public void periodic() {
     IO.update();
